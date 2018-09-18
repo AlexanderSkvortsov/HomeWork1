@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">HomeWork4</string>
+    <string name="action_settings">Settings</string>
+    <string name="txtLine1">Line1</string>
+    <string name="txtLine2">Line2</string>
+    <string name="button2">Press or die</string>
+    <string name="label1">You clicked the following Item</string>
+</resources>
