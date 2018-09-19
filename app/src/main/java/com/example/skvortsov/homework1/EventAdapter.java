@@ -45,6 +45,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     {
         this.events.clear();
         this.events.addAll(events);
+        notifyDataSetChanged();
     }
 
     @Override

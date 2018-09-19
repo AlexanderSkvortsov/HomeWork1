@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.Date;
 import java.util.ArrayList;
@@ -62,12 +63,29 @@ public class ListFragment extends Fragment implements OnItemClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.list);
+        Button button = view.findViewById(R.id.change_list_button);
+
         for (int i = 0; i < 100; i++)
             eventList.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
 
-        recyclerView.setAdapter(new EventAdapter(eventList, this));
+        final EventAdapter eventAdapter = new EventAdapter(eventList, this);
+
+       // recyclerView.setAdapter(new EventAdapter(eventList, this));
+        recyclerView.setAdapter(eventAdapter);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // change list here
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                List<Event> newEvents = new ArrayList<>();
+                for (int i = 99; i >=0; i--)
+                    newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+               eventAdapter.setEvents(newEvents);
+            }
+        });
     }
 
 

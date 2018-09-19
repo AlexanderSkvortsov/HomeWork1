@@ -19,7 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EventInfoActivity"></activity>
+        <activity android:name=".EventInfoActivity" />
+
+        <service android:name=".Acync.LoaderService" />
+        <service
+            android:name=".Acync.MyIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

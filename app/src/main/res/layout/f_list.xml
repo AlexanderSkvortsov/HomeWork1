@@ -4,6 +4,14 @@
     android:layout_height="match_parent"
     android:background="@android:color/holo_blue_dark">
 
+    <Button
+        android:id="@+id/change_list_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:text="Change list"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
