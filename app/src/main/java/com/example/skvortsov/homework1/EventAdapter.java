@@ -82,6 +82,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             eventBodyTextView.setText(event.getEventBody());
             startDateTextView.setText(event.getEventStartDate());
             endDateTextView.setText(event.getEventEndDate());
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

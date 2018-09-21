@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -28,7 +29,7 @@ public class ListFragment extends Fragment implements OnItemClickListener {
     //new
     public void onItemClick(Event event) {
         Intent intent = new Intent(getActivity(), EventInfoActivity.class);
-        intent.putExtra("myName", event.getEventName());
+        intent.putExtra(EventInfoActivity.ITEM_BUNDLE_NAME, event.getEventName());
         startActivity(intent);
     }
 
@@ -72,8 +73,12 @@ public class ListFragment extends Fragment implements OnItemClickListener {
 
        // recyclerView.setAdapter(new EventAdapter(eventList, this));
         recyclerView.setAdapter(eventAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration decoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
+
+        recyclerView.addItemDecoration(decoration);
 
         // change list here
         button.setOnClickListener(new View.OnClickListener() {
@@ -81,8 +86,18 @@ public class ListFragment extends Fragment implements OnItemClickListener {
             public void onClick(View view) {
 
                 List<Event> newEvents = new ArrayList<>();
-                for (int i = 99; i >=0; i--)
-                    newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+
+                if (( MainActivity.getChangeStep() & 1) == 0) {
+
+                    for (int i = 99; i >= 0; i--)
+                        newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+                }
+                else
+                    for (int i = 0; i < 100; i++)
+                        newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+
+                MainActivity.setNewStep();
+
                eventAdapter.setEvents(newEvents);
             }
         });

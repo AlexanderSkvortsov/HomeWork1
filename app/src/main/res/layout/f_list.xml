@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:text="Change list"
-        />
+        android:text="@string/change_list_button" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"

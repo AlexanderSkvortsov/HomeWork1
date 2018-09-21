@@ -17,7 +17,17 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = ListFragment.class.getName();
+    private static int changeStep = 0;
 
+    public static int getChangeStep()
+    {
+        return changeStep;
+    }
+
+    public static void setNewStep()
+    {
+        changeStep++;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
