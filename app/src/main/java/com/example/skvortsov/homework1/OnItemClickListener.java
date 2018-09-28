@@ -1,6 +1,6 @@
 package com.example.skvortsov.homework1;
 
-import android.view.View;
+import com.example.skvortsov.homework1.Model.Event;
 
 public interface OnItemClickListener {
 

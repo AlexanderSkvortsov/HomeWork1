@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import java.util.Date;
+import com.example.skvortsov.homework1.Model.Event;
+import com.example.skvortsov.homework1.jobs.ScheduleActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,17 +28,21 @@ public class ListFragment extends Fragment implements OnItemClickListener {
 
     private RecyclerView recyclerView;
     private final List<Event> eventList = new ArrayList<>();
+    private FloatingActionButton floatingActionButton;
 
     //new
     public void onItemClick(Event event) {
+        /*
         Intent intent = new Intent(getActivity(), EventInfoActivity.class);
         intent.putExtra(EventInfoActivity.ITEM_BUNDLE_NAME, event.getEventName());
+        startActivity(intent);
+        */
+        Intent intent = new Intent(getActivity(), ScheduleActivity.class);
         startActivity(intent);
     }
 
 
     public ListFragment() {
-
     }
 
     // as other
@@ -66,8 +73,17 @@ public class ListFragment extends Fragment implements OnItemClickListener {
         recyclerView = view.findViewById(R.id.list);
         Button button = view.findViewById(R.id.change_list_button);
 
+        floatingActionButton  = view.findViewById(R.id.add_event_floating_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), AddEventActivity.class));
+            }
+        });
+
         for (int i = 0; i < 100; i++)
-            eventList.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+           // eventList.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+            eventList.add((new Event("Test " + i, "Body " + i)));
 
         final EventAdapter eventAdapter = new EventAdapter(eventList, this);
 
@@ -90,11 +106,13 @@ public class ListFragment extends Fragment implements OnItemClickListener {
                 if (( MainActivity.getChangeStep() & 1) == 0) {
 
                     for (int i = 99; i >= 0; i--)
-                        newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+                        //newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+                        newEvents.add((new Event("Test " + i,  "Body " + i)));
                 }
                 else
                     for (int i = 0; i < 100; i++)
-                        newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+                        //newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+                        newEvents.add((new Event("Test " + i, "Body " + i)));
 
                 MainActivity.setNewStep();
 

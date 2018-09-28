@@ -3,6 +3,7 @@
     package="com.example.skvortsov.homework1">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,8 +12,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/app_name">
+
+            <!-- android:theme="@style/AppTheme.NoActionBar" -->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +27,20 @@
         <service android:name=".Acync.LoaderService" />
         <service
             android:name=".Acync.MyIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".MySharedPreferences" />
+        <activity
+            android:name=".jobs.ScheduleActivity"
+            android:label="@string/title_activity_schedule"></activity>
+
+        <service
+            android:name=".jobs.SchceduleJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity
+            android:name=".AddEventActivity"
+            android:label="@string/title_activity_add_event"></activity>
     </application>
 
 </manifest>

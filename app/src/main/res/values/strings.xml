@@ -11,4 +11,15 @@
     <string name="textView3">My text2</string>
     <string name="editText">Text for edit</string>
     <string name="editText2">Text For Edit</string>
+    <string name="change_button">Press for change</string>
+    <string name="exit_button">Exit</string>
+    <string name="dialog_fragment">fragment_edit_name</string>
+    <string name="title_activity_schedule">ScheduleActivity</string>
+    <string name="btn_sheduler_ok">OK</string>
+    <string name="txt_sheduler_start">Начало</string>
+    <string name="txt_sheduler_end">Конец</string>
+    <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="eventName">Event Name</string>
+    <string name="eventBody">Event Body</string>
+
 </resources>
