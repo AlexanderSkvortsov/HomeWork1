@@ -21,13 +21,13 @@ public class DaoTaskLoadAll extends AsyncTask <Void, Integer, Void> {
                 .getEventDatabase()
                 .eventDao()
                 .getEvent();
-
+/*
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+*/
         return null;
     }
 

@@ -40,6 +40,7 @@ dependencies {
     testImplementation "android.arch.persistence.room:testing:$room_version"
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-firestore:17.1.0'
     implementation 'com.evernote:android-job:1.2.6'
 }
 

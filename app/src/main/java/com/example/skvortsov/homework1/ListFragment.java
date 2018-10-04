@@ -17,13 +17,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.skvortsov.homework1.DAO.DaoTaskInsert;
 import com.example.skvortsov.homework1.DAO.DaoTaskLoadAll;
 import com.example.skvortsov.homework1.Model.Event;
 import com.example.skvortsov.homework1.jobs.ScheduleActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -136,31 +144,94 @@ public class ListFragment extends Fragment implements OnItemClickListener {
         */
     }
 
+    private void showProgressDialog(String s)
+    {
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage(s);
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        final DaoTaskLoadAll daoTaskLoadAll = new DaoTaskLoadAll(new DaoTaskLoadAll.OnLoadDoneListener(){
-            @Override
-            public void onEndLoad(List<Event> events) {
-                dialog.dismiss();
-                numberOfItems = events.size();
-                ListFragment.getRecyclerViewAdapter().setEvents(events);
-            }
 
-            @Override
-            public void onStartLoad() {
-                    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    dialog.setMessage("Loading. Please wait...");
-                    dialog.setIndeterminate(true);
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
+        /*
+                // кидаем скопом в FireBase
+                WriteBatch writeBatch = App.getInsance().getFirebaseStore().batch();
 
+                for(Event event:events){
+                    DocumentReference documentReference = App.getInsance().getFirebaseCollection().document();
+                    writeBatch.set(documentReference,event);
                 }
-        });
+                writeBatch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getContext(), "Batch success", Toast.LENGTH_LONG).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getContext(), "Batch failed", Toast.LENGTH_LONG).show();
+                                                e.printStackTrace();
+                                            }
+                                        }
+                );
 
-        daoTaskLoadAll.execute();
+*/
+        showProgressDialog("FireBase Loading. Please wait...");
+        App.getInsance().getFirebaseCollection().get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<Event> events = new ArrayList<>();
+                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                    Event event = documentSnapshot.toObject(Event.class);
+                    event.setRemoteId(documentSnapshot.getReference().getId());
+                    events.add(event);
+                }
+
+                dialog.dismiss();
+
+                DaoTaskInsert daoTaskInsert = new DaoTaskInsert(new DaoTaskInsert.OnInsertDoneListener(){
+
+                    @Override
+                    public void onEndInsert() {
+                        // do nothing
+                        dialog.dismiss();
+                        final DaoTaskLoadAll daoTaskLoadAll = new DaoTaskLoadAll(new DaoTaskLoadAll.OnLoadDoneListener(){
+                            @Override
+                            public void onEndLoad(List<Event> events) {
+                                numberOfItems = events.size();
+                                ListFragment.getRecyclerViewAdapter().setEvents(events);
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onStartLoad() {
+                                showProgressDialog("SQL Loading. Please wait...");
+                            }
+                        });
+
+                        daoTaskLoadAll.execute();
+
+
+
+                    }
+
+                    @Override
+                    public void onStartInsert() {
+                        showProgressDialog("Inserting. Please wait...");
+                    }
+
+                }, events);
+
+                daoTaskInsert.execute();
+
+
+            }
+        });
     }
 
     @Override

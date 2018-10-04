@@ -12,6 +12,8 @@ import com.example.skvortsov.homework1.DAO.DaoTaskInsert;
 import com.example.skvortsov.homework1.Model.Event;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -102,7 +104,9 @@ public class AddEventActivity extends Activity {
                     }
 
                  },
-                 new Event(nameEditText.getText().toString(),new Date(),new Date(),nameEditBody.getText().toString()));
+                  Collections.singletonList(new Event(nameEditText.getText().toString(),new Date(),new Date(),nameEditBody.getText().toString())));
+
+//                 new Event(nameEditText.getText().toString(),new Date(),new Date(),nameEditBody.getText().toString()));
 
                 daoTaskInsert.execute();
 /*

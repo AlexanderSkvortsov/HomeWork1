@@ -2,19 +2,26 @@ package com.example.skvortsov.homework1.Model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
 
 import com.example.skvortsov.homework1.Model.converters.DateTimeConverter;
+import com.google.firebase.firestore.Exclude;
 
 import java.util.Date;
 
-@Entity // определение таблицы в базе данных
+// определение таблицы в базе данных
+@Entity (indices = {@Index(value = {"remote_id"}, unique =  true)})
 public class Event {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+
+    // одинаковые записи не дублируются в базе данных
+    @ColumnInfo(name = "remote_id")
+    private String remoteId;
 
     @ColumnInfo(name = "event_name")
     private String eventName;
@@ -42,6 +49,8 @@ public class Event {
 
     }
 
+    public Event(){}
+
     public Date getStartDate() {
         return startDate;
     }
@@ -58,7 +67,8 @@ public class Event {
         this.endDate = endDate;
     }
 
-
+    // не включать в Firestore
+    @Exclude
     public int getId() {
         return id;
     }
@@ -84,4 +94,11 @@ public class Event {
     }
 
 
+    public String getRemoteId() {
+        return remoteId;
+    }
+
+    public void setRemoteId(String remoteId) {
+        this.remoteId = remoteId;
+    }
 }
