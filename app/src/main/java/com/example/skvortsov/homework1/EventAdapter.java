@@ -72,8 +72,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
           //  eventNameTextView = itemView.findViewById(R.id.event_name_text_view);
                    eventNameTextView = itemView.findViewById(R.id.rv_row_EventName);
                    eventBodyTextView = itemView.findViewById(R.id.rv_row_EventBody);
-                //   startDateTextView = itemView.findViewById(R.id.rv_row_EventDateStart);
-                 //  endDateTextView = itemView.findViewById(R.id.rv_row_EventDateEnd);
+                   startDateTextView = itemView.findViewById(R.id.rv_row_EventDateStart);
+                   endDateTextView = itemView.findViewById(R.id.rv_row_EventDateEnd);
              //new
         }
 
@@ -82,8 +82,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             //eventNameTextView.setText(event.getEventName());
             eventNameTextView.setText(event.getEventName());
             eventBodyTextView.setText(event.getEventBody());
-           // startDateTextView.setText(event.getEventStartDate());
-           // endDateTextView.setText(event.getEventEndDate());
+            startDateTextView.setText(event.getStartDate().toString());
+            endDateTextView.setText(event.getEndDate().toString());
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

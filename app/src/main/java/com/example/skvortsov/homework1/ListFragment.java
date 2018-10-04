@@ -1,5 +1,6 @@
 package com.example.skvortsov.homework1;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,18 +18,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.skvortsov.homework1.DAO.DaoTaskInsert;
+import com.example.skvortsov.homework1.DAO.DaoTaskLoadAll;
 import com.example.skvortsov.homework1.Model.Event;
 import com.example.skvortsov.homework1.jobs.ScheduleActivity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 //new
 public class ListFragment extends Fragment implements OnItemClickListener {
 
-    private RecyclerView recyclerView;
+    private static RecyclerView  recyclerView;
     private final List<Event> eventList = new ArrayList<>();
     private FloatingActionButton floatingActionButton;
+    ProgressDialog dialog ;
+    ListFragment listFragment;
+    static int numberOfItems=0;
 
     //new
     public void onItemClick(Event event) {
@@ -41,8 +48,13 @@ public class ListFragment extends Fragment implements OnItemClickListener {
         startActivity(intent);
     }
 
+    public static EventAdapter getRecyclerViewAdapter()
+    {
+        return (EventAdapter) recyclerView.getAdapter();
+    }
 
     public ListFragment() {
+        listFragment = this;
     }
 
     // as other
@@ -71,7 +83,9 @@ public class ListFragment extends Fragment implements OnItemClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.list);
-        Button button = view.findViewById(R.id.change_list_button);
+        dialog= new ProgressDialog(this.getContext()); // this = YourActivity
+
+        //Button button = view.findViewById(R.id.change_list_button);
 
         floatingActionButton  = view.findViewById(R.id.add_event_floating_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -82,8 +96,8 @@ public class ListFragment extends Fragment implements OnItemClickListener {
         });
 
         for (int i = 0; i < 100; i++)
-           // eventList.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
-            eventList.add((new Event("Test " + i, "Body " + i)));
+            eventList.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+            //eventList.add((new Event("Test " + i, "Body " + i)));
 
         final EventAdapter eventAdapter = new EventAdapter(eventList, this);
 
@@ -95,7 +109,7 @@ public class ListFragment extends Fragment implements OnItemClickListener {
         DividerItemDecoration decoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
 
         recyclerView.addItemDecoration(decoration);
-
+/*
         // change list here
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,25 +120,47 @@ public class ListFragment extends Fragment implements OnItemClickListener {
                 if (( MainActivity.getChangeStep() & 1) == 0) {
 
                     for (int i = 99; i >= 0; i--)
-                        //newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
-                        newEvents.add((new Event("Test " + i,  "Body " + i)));
+                        newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+                        //newEvents.add((new Event("Test " + i,  "Body " + i)));
                 }
                 else
                     for (int i = 0; i < 100; i++)
-                        //newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
-                        newEvents.add((new Event("Test " + i, "Body " + i)));
+                        newEvents.add((new Event("Test " + i, new Date(), new Date(), "Body " + i)));
+                       // newEvents.add((new Event("Test " + i, "Body " + i)));
 
                 MainActivity.setNewStep();
 
                eventAdapter.setEvents(newEvents);
             }
         });
+        */
     }
 
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
+        final DaoTaskLoadAll daoTaskLoadAll = new DaoTaskLoadAll(new DaoTaskLoadAll.OnLoadDoneListener(){
+            @Override
+            public void onEndLoad(List<Event> events) {
+                dialog.dismiss();
+                numberOfItems = events.size();
+                ListFragment.getRecyclerViewAdapter().setEvents(events);
+            }
+
+            @Override
+            public void onStartLoad() {
+                    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    dialog.setMessage("Loading. Please wait...");
+                    dialog.setIndeterminate(true);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+
+                }
+        });
+
+        daoTaskLoadAll.execute();
     }
 
     @Override

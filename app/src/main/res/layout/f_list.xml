@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/holo_blue_dark">
-
+<!--
     <Button
         android:id="@+id/change_list_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:text="@string/change_list_button" />
-
+-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_event_floating_button"
         android:layout_width="wrap_content"

@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.format.Time;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -98,6 +99,11 @@ public class ScheduleActivity extends Activity {
                     long startTimeMillis= startDate.getTime() - calendar.getTimeInMillis();
                     long endTimeMillis =endDate.getTime() - calendar.getTimeInMillis();
 
+                    // запуск Job через evernote , альтернатива стандартному
+                    ScheduleJob.sheduleMe(startTimeMillis,"Title1","Text1","123\r\n123\n123\n123\n");
+                    ScheduleJob.sheduleMe(endTimeMillis,"Title2","Text2","000\r\n111\n222\n333\n");
+
+/*
                     ComponentName jobServiceName = new ComponentName(v.getContext(), SchceduleJobService.class);
                     JobInfo startJobInfo = new JobInfo.Builder(1, jobServiceName)
                             .setMinimumLatency(startTimeMillis)//.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -116,7 +122,7 @@ public class ScheduleActivity extends Activity {
                             secondJob == JobScheduler.RESULT_SUCCESS) {
                         Toast.makeText(v.getContext(), "Jobs Scheduled", Toast.LENGTH_LONG).show();
                     }
-
+*/
 
                 } catch (ParseException e) {
                     e.printStackTrace();

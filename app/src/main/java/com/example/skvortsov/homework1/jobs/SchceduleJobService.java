@@ -18,11 +18,11 @@ public class SchceduleJobService extends JobService {
         {
             case 1:
                 //Toast.makeText(getApplicationContext(),"Start Time Jobs", Toast.LENGTH_LONG).show();
-                ScheduleNotificationManager.showNotification(getApplicationContext(),1,"Schedule", "Start Job");
+                ScheduleNotificationManager.showNotification(getApplicationContext(),1,"Schedule", "Start Job","12345\r\n12345\n12345\n12345\n");
                 break;
             case 2:
                 //Toast.makeText(getApplicationContext(),"End Time Jobs", Toast.LENGTH_LONG).show();
-                ScheduleNotificationManager.showNotification(getApplicationContext(),1,"Schedule", "End Job");
+                ScheduleNotificationManager.showNotification(getApplicationContext(),1,"Schedule", "End Job","66666\r\n66666\n66666\n66666\n");
                 break;
 
         }

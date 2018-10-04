@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = ListFragment.class.getName();
     private static int changeStep = 0;
+    public static final String EXTRA_MESSAGE = "extraMessage";
 
     public static int getChangeStep()
     {
@@ -53,12 +55,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Get the Intent that started this activity and extract the string
+        Intent intent = getIntent();
+        if (intent != null) {
+            String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+            if (message !=null) {
+                // Capture the layout's TextView and set the string as its text
+                EditText textEdit = findViewById(R.id.editText2);
+                textEdit.setText(message);
+            }
+        }
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_main);
         Button button = findViewById(R.id.button2);
-
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

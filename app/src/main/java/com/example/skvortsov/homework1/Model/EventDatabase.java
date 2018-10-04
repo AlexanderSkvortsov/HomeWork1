@@ -6,8 +6,8 @@ import android.arch.persistence.room.DatabaseConfiguration;
 import android.arch.persistence.room.InvalidationTracker;
 import android.arch.persistence.room.RoomDatabase;
 import android.support.annotation.NonNull;
-// описание базы
-@Database(entities = Event.class,version = 1, exportSchema = false)
+// описание базы version 1 без дат
+@Database(entities = Event.class,version = 2, exportSchema = false)
 
 public abstract class EventDatabase extends RoomDatabase {
 

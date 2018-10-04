@@ -21,5 +21,9 @@
     <string name="title_activity_add_event">AddEventActivity</string>
     <string name="eventName">Event Name</string>
     <string name="eventBody">Event Body</string>
+    <string name="sheduleJobTitle1">Event Body</string>
+    <string name="ex_title">ex_title></string>
+    <string name="ex_text">ex_text></string>
+    <string name="ex_BigText"></string>
 
 </resources>
