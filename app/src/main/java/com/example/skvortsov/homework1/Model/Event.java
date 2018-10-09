@@ -13,7 +13,7 @@ import com.google.firebase.firestore.Exclude;
 import java.util.Date;
 
 // определение таблицы в базе данных
-@Entity (indices = {@Index(value = {"remote_id"}, unique =  true)})
+@Entity(indices = {@Index(value = {"remote_id"}, unique = true)})
 public class Event {
 
     @PrimaryKey(autoGenerate = true)
@@ -49,7 +49,8 @@ public class Event {
 
     }
 
-    public Event(){}
+    public Event() {
+    }
 
     public Date getStartDate() {
         return startDate;
@@ -100,5 +101,11 @@ public class Event {
 
     public void setRemoteId(String remoteId) {
         this.remoteId = remoteId;
+    }
+
+    @Override
+    public String toString() {
+
+        return eventName + "\n" + eventBody + "\n";
     }
 }

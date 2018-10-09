@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+//import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -114,9 +115,8 @@ public class ListFragment extends Fragment implements OnItemClickListener {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        DividerItemDecoration decoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
-
-        recyclerView.addItemDecoration(decoration);
+     //   DividerItemDecoration decoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
+      //  recyclerView.addItemDecoration(decoration);
 /*
         // change list here
         button.setOnClickListener(new View.OnClickListener() {

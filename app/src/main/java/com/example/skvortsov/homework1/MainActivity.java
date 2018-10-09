@@ -22,17 +22,9 @@ public class MainActivity extends AppCompatActivity {
     private static int changeStep = 0;
     public static final String EXTRA_MESSAGE = "extraMessage";
 
-    public static int getChangeStep()
-    {
-        return changeStep;
-    }
+    static int selected_position = -1;
 
-    public static void setNewStep()
-    {
-        changeStep++;
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu) {
+     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_menu, menu);
         return true;

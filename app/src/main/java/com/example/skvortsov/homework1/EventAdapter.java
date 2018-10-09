@@ -1,8 +1,12 @@
 package com.example.skvortsov.homework1;
 
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -11,12 +15,12 @@ import com.example.skvortsov.homework1.Model.Event;
 
 import java.util.List;
 
-
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder>{
 
     private List<Event> events;
     //new
     private static OnItemClickListener itemListener;
+    private ConstraintLayout cardViewLayout;
 
     //public  EventAdapter(List <Event> events, new OnItemClickListener())
     public  EventAdapter(List <Event> events, OnItemClickListener itemListener)
@@ -40,6 +44,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     // дать данные
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         holder.bind(events.get(position));
+        //cardViewLayout.setBackgroundColor((MainActivity.selected_position == position) ? 0x8bc34a :0xbef67a);
+
       //  this.notifyDataSetChanged();
     }
 
@@ -56,7 +62,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return events.size();
     }
 
-    public static class EventViewHolder extends RecyclerView.ViewHolder
+    public class EventViewHolder extends RecyclerView.ViewHolder
     {
 
 //        private TextView eventNameTextView;
@@ -89,6 +95,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 @Override
                 public void onClick(View view) {
                     itemListener.onItemClick(event);
+
                 }
             });
 
