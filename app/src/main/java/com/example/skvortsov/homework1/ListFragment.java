@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -43,7 +45,7 @@ import java.util.Date;
 import java.util.List;
 
 //new
-public class ListFragment extends Fragment implements OnItemClickListener, RecyclerItemTouchHelperCallback.RecyclerItemTouchHelperListener {
+public class ListFragment extends Fragment implements OnItemClickListener, RecyclerItemTouchHelperCallback.RecyclerItemTouchHelperListener , ListContract.View{
 
     private RecyclerView  recyclerView;
     private EventAdapter recyclerAdapter;
@@ -54,6 +56,11 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
     static int numberOfItems=0;
     private SwipeRefreshLayout swipeRefreshLayout;
     private  View container;
+    private Snackbar snackbar;
+    private  static  final long UNDO_DELAY  = 5000;
+    private UndoHandler undoHandler ;
+
+
 
     //new
     public void onItemClick(Event event) {
@@ -166,24 +173,43 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
 
                 dialog.dismiss();
 
-                final DaoTaskLoadAll daoTaskLoadAll = new DaoTaskLoadAll(new DaoTaskLoadAll.OnLoadDoneListener(){
+
+
+
+                DaoTaskInsert daoTaskInsert = new DaoTaskInsert(new DaoTaskInsert.OnInsertDoneListener(){
+
                     @Override
-                    public void onEndLoad(List<Event> events) {
-                        numberOfItems = events.size();
-                        recyclerAdapter.setEvents(events);
+                    public void onEndInsert() {
+                        // do nothing
                         dialog.dismiss();
+                        final DaoTaskLoadAll daoTaskLoadAll = new DaoTaskLoadAll(new DaoTaskLoadAll.OnLoadDoneListener(){
+                            @Override
+                            public void onEndLoad(List<Event> events) {
+                                numberOfItems = events.size();
+                                recyclerAdapter.setEvents(events);
+                                dialog.dismiss();
 
-                        // спрятать swipe
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                                // спрятать swipe
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+
+                            @Override
+                            public void onStartLoad() {
+                                showProgressDialog("SQL Loading. Please wait...");
+                            }
+                        });
+
+                        daoTaskLoadAll.execute();
+                   }
 
                     @Override
-                    public void onStartLoad() {
-                        showProgressDialog("SQL Loading. Please wait...");
+                    public void onStartInsert() {
+                        showProgressDialog("Inserting. Please wait...");
                     }
-                });
 
-                daoTaskLoadAll.execute();
+                }, events);
+
+                daoTaskInsert.execute();
             }
         });
     }
@@ -192,6 +218,7 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.list);
+
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_events);
         container = view.findViewById(R.id.container);
         dialog= new ProgressDialog(this.getContext()); // this = YourActivity
@@ -333,18 +360,38 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
             final int deletedIndex = viewHolder.getAdapterPosition();
             // remove the item from recycler view
             recyclerAdapter.removeItem(viewHolder.getAdapterPosition());
+            // здесь удаляет  UndoHandler по таймауту
+            undoHandler = new UndoHandler(Looper.getMainLooper(),deletedItem, new DaoTaskDelete.OnDeleteDoneListener() {
+                @Override
+                public void onEndDelete() {
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onStartDelete() {
+                    showProgressDialog("SQL Deleting. Please wait...");
+                }
+            });
+
             // showing snack bar with Undo option
-            Snackbar snackbar = Snackbar
+            snackbar = Snackbar
                     //.make(container, name + " removed from cart!", Snackbar.LENGTH_LONG);
-                    .make(container, name + " removed from cart!", 5000);
+                    .make(container, name + " removed from cart!", Snackbar.LENGTH_INDEFINITE);
+
+            undoHandler.startUndo(snackbar);
+
             snackbar.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // undo is selected, restore the deleted item
+                    undoHandler.stop();
                     recyclerAdapter.restoreItem(deletedItem, deletedIndex);
+                    snackbar.dismiss();
+
                 }
             });
-
+/*
+// Здесь удаляет снекбар по таймауту
             snackbar.addCallback(new Snackbar.Callback() {
                 @Override
                 public void onDismissed(Snackbar snackbar, int sn_event) {
@@ -371,10 +418,36 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
                 public void onShown(Snackbar snackbar) {
                 }
             });
+*/
 
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
         }
+    }
+
+    @Override
+    public void showAddActivity() {
+
+    }
+
+    @Override
+    public void showEvents(List<Event> events) {
+
+    }
+
+    @Override
+    public void showScheduleActivity() {
+
+    }
+
+    @Override
+    public void deleteFromList(Event event, int position) {
+
+    }
+
+    @Override
+    public void restoreEvent(Event event, int position) {
+
     }
 
     //
