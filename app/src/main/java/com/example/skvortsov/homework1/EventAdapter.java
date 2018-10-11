@@ -40,6 +40,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
            return new EventViewHolder(view);
     }
 
+    public Event getContactFromPosition(int position)
+    {
+        return events.get(position);
+    }
+
     @Override
     // дать данные
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
@@ -48,6 +53,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
       //  this.notifyDataSetChanged();
     }
+
+    public void removeItem(int position)
+    {
+        events.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(Event item, int position)
+    {
+        events.add(position, item);
+        notifyItemInserted(position);
+    }
+
 
     public  void setEvents(List<Event> events)
     {
@@ -71,6 +89,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         private TextView startDateTextView;
         private TextView endDateTextView;
 
+        private View foregraund;
 
 
         public EventViewHolder(View itemView) {
@@ -80,7 +99,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                    eventBodyTextView = itemView.findViewById(R.id.rv_row_EventBody);
                    startDateTextView = itemView.findViewById(R.id.rv_row_EventDateStart);
                    endDateTextView = itemView.findViewById(R.id.rv_row_EventDateEnd);
-             //new
+                   foregraund = itemView.findViewById(R.id.cardView);;
+
+            //new
         }
 
         public void  bind(final Event event)
@@ -99,6 +120,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 }
             });
 
+        }
+
+        public View getForegraund() {
+            return foregraund;
         }
     }
 }

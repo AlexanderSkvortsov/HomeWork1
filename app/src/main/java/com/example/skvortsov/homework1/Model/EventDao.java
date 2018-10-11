@@ -11,7 +11,7 @@ import java.util.List;
 @Dao
 public interface EventDao {
 
-    @Query("SELECT * FROM event")
+    @Query("SELECT * FROM event ORDER BY event_name ASC")
     List<Event> getEvent();
 
     @Insert

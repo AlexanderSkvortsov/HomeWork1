@@ -26,14 +26,17 @@ public class FirebaseNotificatonService extends Service {
         App.getInsance().getFirebaseCollection().addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if ((queryDocumentSnapshots != null) && (App.getInsance().getOnDestroyed())) {
+//                if ((queryDocumentSnapshots != null) && (App.getInsance().getOnDestroyed())) {
+                if (queryDocumentSnapshots != null)  {
                     for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (dc.getType() == DocumentChange.Type.ADDED) {
                             ScheduleNotificationManager.showNotification(getApplicationContext(), 1, "Shedule", "New Item add", dc.getDocument().toObject(Event.class).toString());
                         } else if (dc.getType() == DocumentChange.Type.MODIFIED) {
                             ScheduleNotificationManager.showNotification(getApplicationContext(), 1, "Shedule", "Item modified", dc.getDocument().toObject(Event.class).toString());
-
                         }
+//                        else if (dc.getType() == DocumentChange.Type.REMOVED) {
+//                            ScheduleNotificationManager.showNotification(getApplicationContext(), 1, "Shedule", "Item deleted", dc.getDocument().toObject(Event.class).toString());
+//                       }
                     }
                 }
             }
