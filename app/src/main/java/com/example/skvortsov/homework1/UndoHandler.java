@@ -7,20 +7,22 @@ import android.support.design.widget.Snackbar;
 
 import com.example.skvortsov.homework1.DAO.DaoTaskDelete;
 import com.example.skvortsov.homework1.Model.Event;
+import com.example.skvortsov.homework1.Model.EventListModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 
 public class UndoHandler extends Handler {
 
-    private  Event event;
-    private  static  final long UNDO_DELAY  = 5000;
-    private Snackbar snackbar;
+    private Event event;
+    private static final long UNDO_DELAY = 5000;
+    private ListContract.View view;
     private DaoTaskDelete.OnDeleteDoneListener onDeleteDoneListener;
+    private EventListModel eventListModel;
+    private EventListModel.OnEventDeleted onEventDeleted;
 
 
-    public  void stop()
-    {
+    public void stop() {
         removeCallbacks(undoRunnable);
     }
 
@@ -35,7 +37,17 @@ public class UndoHandler extends Handler {
                         @Override
                         public void onSuccess(Void aVoid) {
                             // удаляем в локальной базе если Success
-                            final DaoTaskDelete daoTaskDelete = new DaoTaskDelete(onDeleteDoneListener, event);
+                            final DaoTaskDelete daoTaskDelete = new DaoTaskDelete(new DaoTaskDelete.OnDeleteDoneListener() {
+                                @Override
+                                public void onEndDelete() {
+                                    onEventDeleted.onEventDeleted();
+                                }
+
+                                @Override
+                                public void onStartDelete() {
+
+                                }
+                            }, event);
 
                             daoTaskDelete.execute();
                         }
@@ -45,19 +57,27 @@ public class UndoHandler extends Handler {
                     e.printStackTrace();
                 }
             });
-            snackbar.dismiss();
+
+            eventListModel.deleteEvent(event,onEventDeleted);
+            view.hideSnackBar();
+
         }
     };
 
-    public UndoHandler (Looper looper, Event event, DaoTaskDelete.OnDeleteDoneListener onDeleteDoneListener)
+    public UndoHandler (Looper looper, Event event, EventListModel eventListModel, EventListModel.OnEventDeleted onEventDeleted)
     {
         super(looper);
         this.event = event;
-        this.onDeleteDoneListener = onDeleteDoneListener;
+        this.eventListModel= eventListModel;
+        this.onEventDeleted = onEventDeleted;
+
+
     }
-    public  void  startUndo(Snackbar snackbar)
+    public  void  startUndo(ListContract.View view, int position)
     {
-        this.snackbar=snackbar;
+        this.view=view;
+        view.showSnackBar();
+        view.deleteFromList(event, position);
         postDelayed(undoRunnable, UNDO_DELAY);
     }
 }

@@ -15,6 +15,10 @@ interface ListContract {
         void showScheduleActivity();
         void deleteFromList(Event event, int position);
         void restoreEvent(Event event, int position);
+        void showSnackBar();
+        void hideSnackBar();
+        void hideRefresh();
+
 
     }
 
@@ -22,7 +26,7 @@ interface ListContract {
           void onAddClicked();
           void refresh();
           void eventClicked(Event event);
-          void swipe();
+          void swipe(Event event, int position);
         }
 
 }

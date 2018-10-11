@@ -30,6 +30,7 @@ import com.example.skvortsov.homework1.DAO.DaoTaskDelete;
 import com.example.skvortsov.homework1.DAO.DaoTaskInsert;
 import com.example.skvortsov.homework1.DAO.DaoTaskLoadAll;
 import com.example.skvortsov.homework1.Model.Event;
+import com.example.skvortsov.homework1.Model.EventListModelImpl;
 import com.example.skvortsov.homework1.jobs.ScheduleActivity;
 import com.example.skvortsov.homework1.swipe.RecyclerItemTouchHelperCallback;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,7 +60,7 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
     private Snackbar snackbar;
     private  static  final long UNDO_DELAY  = 5000;
     private UndoHandler undoHandler ;
-
+    private ListContract.Presenter presenter;
 
 
     //new
@@ -68,9 +69,11 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
         Intent intent = new Intent(getActivity(), EventInfoActivity.class);
         intent.putExtra(EventInfoActivity.ITEM_BUNDLE_NAME, event.getEventName());
         startActivity(intent);
-        */
+
         Intent intent = new Intent(getActivity(), ScheduleActivity.class);
         startActivity(intent);
+        */
+        presenter.eventClicked(event);
     }
 
     public ListFragment() {
@@ -158,6 +161,8 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
     }
 */
 
+/*
+
     public  void  refresh()
     {
         showProgressDialog("FireBase Loading. Please wait...");
@@ -212,8 +217,9 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
                 daoTaskInsert.execute();
             }
         });
-    }
 
+    }
+*/
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -224,12 +230,13 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
         dialog= new ProgressDialog(this.getContext()); // this = YourActivity
 
         //Button button = view.findViewById(R.id.change_list_button);
+        presenter = new EventListPresenter(new EventListModelImpl());
 
         floatingActionButton  = view.findViewById(R.id.add_event_floating_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), AddEventActivity.class));
+               presenter.onAddClicked();
             }
         });
 
@@ -250,7 +257,7 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refresh();
+                presenter.refresh();
             }
         });
      //   DividerItemDecoration decoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
@@ -297,7 +304,7 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
     public void onResume()
     {
         super.onResume();
-
+        presenter.attach(this);
         /*
                 // кидаем скопом в FireBase
                 WriteBatch writeBatch = App.getInsance().getFirebaseStore().batch();
@@ -319,9 +326,9 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
                                             }
                                         }
                 );
-
-*/
         refresh();
+*/
+
     }
 
     @Override
@@ -332,6 +339,7 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
     @Override
     public void onDestroy() {
         super.onDestroy();
+        presenter.deatach();
     }
 
     // for fragments
@@ -358,38 +366,9 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
             // backup of removed item for undo purpose
             final Event deletedItem = recyclerAdapter.getContactFromPosition(viewHolder.getAdapterPosition());
             final int deletedIndex = viewHolder.getAdapterPosition();
-            // remove the item from recycler view
-            recyclerAdapter.removeItem(viewHolder.getAdapterPosition());
-            // здесь удаляет  UndoHandler по таймауту
-            undoHandler = new UndoHandler(Looper.getMainLooper(),deletedItem, new DaoTaskDelete.OnDeleteDoneListener() {
-                @Override
-                public void onEndDelete() {
-                    dialog.dismiss();
-                }
 
-                @Override
-                public void onStartDelete() {
-                    showProgressDialog("SQL Deleting. Please wait...");
-                }
-            });
-
+            presenter.swipe(deletedItem, deletedIndex);
             // showing snack bar with Undo option
-            snackbar = Snackbar
-                    //.make(container, name + " removed from cart!", Snackbar.LENGTH_LONG);
-                    .make(container, name + " removed from cart!", Snackbar.LENGTH_INDEFINITE);
-
-            undoHandler.startUndo(snackbar);
-
-            snackbar.setAction("UNDO", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // undo is selected, restore the deleted item
-                    undoHandler.stop();
-                    recyclerAdapter.restoreItem(deletedItem, deletedIndex);
-                    snackbar.dismiss();
-
-                }
-            });
 /*
 // Здесь удаляет снекбар по таймауту
             snackbar.addCallback(new Snackbar.Callback() {
@@ -418,37 +397,70 @@ public class ListFragment extends Fragment implements OnItemClickListener, Recyc
                 public void onShown(Snackbar snackbar) {
                 }
             });
-*/
 
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
+*/
+
         }
     }
 
     @Override
     public void showAddActivity() {
-
+        startActivity(new Intent(getContext(), AddEventActivity.class));
     }
 
     @Override
     public void showEvents(List<Event> events) {
-
+        recyclerAdapter.setEvents(events);
     }
 
     @Override
     public void showScheduleActivity() {
-
+        Intent intent = new Intent(getActivity(), ScheduleActivity.class);
+        startActivity(intent);
     }
 
     @Override
     public void deleteFromList(Event event, int position) {
-
+        recyclerAdapter.removeItem(position);
     }
 
     @Override
     public void restoreEvent(Event event, int position) {
+        recyclerAdapter.restoreItem(event,position);
+    }
+
+    @Override
+    public void showSnackBar() {
+
+        snackbar = Snackbar
+                //.make(container, name + " removed from cart!", Snackbar.LENGTH_LONG);
+                .make(container, " removed from cart!", Snackbar.LENGTH_INDEFINITE);
+
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // undo is selected, restore the deleted item
+                hideSnackBar();
+            }
+        });
+        snackbar.setActionTextColor(Color.YELLOW);
+        snackbar.show();
+
 
     }
+
+    @Override
+    public void hideSnackBar() {
+        snackbar.dismiss();
+    }
+
+    @Override
+    public void hideRefresh() {
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
 
     //
 }
